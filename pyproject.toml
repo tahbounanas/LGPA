@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=64", "pybind11>=2.10"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "LGPA"
+version = "1.0.0"
+description = "Log-Gravity Propagation Algorithm (LGPA) for community detection in complex networks"
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "MIT" }
+authors = [{ name = "Anasse Tahboun" }]
+keywords = ["community-detection", "graph", "networks", "label-propagation", "LGPA","Complex-Networks","Graph-Mining","Social-Network-Analysis","Log-Gravity-Propagation-Algorithm"]
+dependencies = ["networkx>=2.5"]
+
+[project.urls]
+Homepage = "https://github.com/tahbounanas/LGPA"
+Repository = "https://github.com/tahbounanas/LGPA"
+
+[tool.setuptools]
+packages = ["LGPA"]
+
+
+
+

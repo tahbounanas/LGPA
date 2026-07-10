@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite both the software and the article below."
+title: "LGPA: Log-Gravity Propagation Algorithm"
+authors:
+  - family-names: "Tahboun"
+    given-names: "Anasse"
+version: "1.0.0"
+license: MIT
+repository-code: "https://github.com/tahbounanas/LGPA"
+preferred-citation:
+  type: article
+  title: "LGPA: Log-Gravity Propagation Algorithm for Community Detection in Complex Networks"
+  authors:
+    - family-names: "Tahboun"
+      given-names: "Anasse"
+  # TODO: fill in once published
+  #journal: ""
+  #year: 
+  #doi: ""

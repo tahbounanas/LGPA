@@ -1,0 +1,3 @@
+include LGPA/lgpa_core.cpp
+include LICENSE
+include README.md
