@@ -4,42 +4,40 @@ A deterministic, tuning-free community detection algorithm for complex networks,
 
 LGPA resolves two well-known weaknesses of standard Label Propagation — run-to-run instability and the formation of oversized *"monster"* communities — using a Laplacian-smoothed Jaccard similarity, a statistical Coring phase, and a log-gravity propagation rule that logarithmically dampens the influence of high-degree hubs. Its threshold and update rule are derived entirely from the graph's own structure, so there is nothing to tune, and its native C++ core scales to networks of tens of thousands of nodes in seconds.
 
-This repository is the reference implementation for the paper *"LGPA: Log-Gravity Propagation Algorithm for Community Detection in Complex Networks"* (ASONAM 2026, Research Track). See [Citation](#citation).
-
----
-
-## Requirements
-
-Installing LGPA compiles a small C++ extension, so you need a C++ compiler in addition to Python. Everything else is installed automatically.
-
-| Requirement | Notes |
-|---|---|
-| **Python** | 3.8 or newer |
-| **A C++ compiler** | Windows: [Microsoft C++ Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/) (select the *"Desktop development with C++"* workload). macOS: `xcode-select --install`. Linux: `sudo apt install build-essential` (or your distro's equivalent). |
-| **pybind11** | Installed automatically during the build. |
-| **networkx** | Installed automatically as a dependency. |
+This is the reference implementation for the paper *"LGPA: Log-Gravity Propagation Algorithm for Community Detection in Complex Networks"* (ASONAM 2026, Research Track). See [Citation](#citation).
 
 ---
 
 ## Installation
 
-### Option 1 — Install directly from GitHub (recommended)
+LGPA is on PyPI with prebuilt wheels for Windows, macOS, and Linux (Python 3.8–3.13), so the normal install needs **no compiler**:
+
+```bash
+pip install LGPA
+```
+
+That's it — `networkx` is pulled in automatically, and LGPA is importable from any folder in that Python environment.
+
+<details>
+<summary>Other installation options</summary>
+
+**From GitHub (latest, unreleased changes):**
 
 ```bash
 pip install git+https://github.com/tahbounanas/LGPA.git
 ```
 
-### Option 2 — Clone, then install
+**From source (clone, then install):**
 
 ```bash
 git clone https://github.com/tahbounanas/LGPA.git
 cd LGPA
-pip install .
+pip install .          # or: pip install -e .  to develop in place
 ```
 
-To develop (edit the C++/Python and rebuild in place), use `pip install -e .` instead.
+Installing from GitHub or source compiles the C++ extension locally, so it requires a C++ compiler: on Windows the [Microsoft C++ Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/) (*"Desktop development with C++"* workload), on macOS `xcode-select --install`, and on Linux `sudo apt install build-essential` (or your distro's equivalent). `pip install LGPA` avoids this entirely by using a prebuilt wheel.
 
-`pip` handles `pybind11`, `networkx`, and compiling the extension. After it finishes, LGPA is importable from any folder in that Python environment.
+</details>
 
 ---
 
@@ -62,8 +60,7 @@ G.add_edge(9, 10)                  # one bridge between the two communities
 
 # Run LGPA
 lgpa = LGPA(G)
-partition = lgpa.fit_predict(max_iter=50) # or simply   partition = LGPA(G).fit_predict()
-
+partition = lgpa.fit_predict(max_iter=50)   # or simply  LGPA(G).fit_predict()
 
 # partition: {node -> community_id}
 print("Communities found:", len(set(partition.values())))
@@ -80,7 +77,7 @@ Communities found: 2
 
 | Input graph | LGPA result |
 |:---:|:---:|
-| ![Input graph](lgpa_before.jpg) | ![LGPA communities](lgpa_after.jpg) |
+| ![Input graph](https://raw.githubusercontent.com/tahbounanas/LGPA/main/lgpa_before.jpg) | ![LGPA communities](https://raw.githubusercontent.com/tahbounanas/LGPA/main/lgpa_after.jpg) |
 
 LGPA correctly separates the two communities (nodes 0–9 and 10–19) despite the bridge edge linking them.
 
@@ -94,9 +91,9 @@ LGPA correctly separates the two communities (nodes 0–9 and 10–19) despite t
 
 ## Example on a real dataset (Thiers)
 
-The [`Datasets/`](Datasets/) folder contains the **Thiers** high-school contact network (327 nodes, 9 ground-truth classes): `Thiers.gml` is the graph and `Thiers_GR.txt` holds the ground-truth class label of each node (in GML node order).
+The [`Datasets/`](https://github.com/tahbounanas/LGPA/tree/main/Datasets) folder contains the **Thiers** high-school contact network (327 nodes, 9 ground-truth classes): `Thiers.gml` is the graph and `Thiers_GR.txt` holds the ground-truth class label of each node (in GML node order).
 
-> This example also uses `scikit-learn` and `scipy` for the metrics (`pip install scikit-learn scipy`); they are not required by LGPA itself.
+> This example uses the dataset files from the [GitHub repository](https://github.com/tahbounanas/LGPA), and additionally `scikit-learn` and `scipy` for the metrics (`pip install scikit-learn scipy`); neither is required by LGPA itself.
 
 ```python
 import json
@@ -160,15 +157,14 @@ Communities found: 9
 NMI: 0.970
 ARI: 0.964
 F1 : 0.979
-Runtime: 0.116 s
+Runtime: 0.133 s
 ```
 
 LGPA recovers all 9 classes with near-perfect agreement to the ground truth (NMI 0.970, ARI 0.964). In the two coloured figures below, each detected community has been matched to its best-corresponding ground-truth class (via Hungarian assignment) and drawn in that class's colour, so the ground-truth and LGPA plots line up directly. The metrics, not the colours, are what quantify the agreement.
 
 | Input network | Ground truth | LGPA communities |
 |:---:|:---:|:---:|
-| ![Thiers input](thiers_before.jpg) | ![Thiers ground truth](thiers_groundtruth.jpg) | ![Thiers LGPA](thiers_after.jpg) |
-
+| ![Thiers input](https://raw.githubusercontent.com/tahbounanas/LGPA/main/thiers_before.jpg) | ![Thiers ground truth](https://raw.githubusercontent.com/tahbounanas/LGPA/main/thiers_groundtruth.jpg) | ![Thiers LGPA](https://raw.githubusercontent.com/tahbounanas/LGPA/main/thiers_after.jpg) |
 
 ### Reproducing the figures
 
