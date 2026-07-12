@@ -10,16 +10,47 @@ This is the reference implementation for the paper *"LGPA: Log-Gravity Propagati
 
 ## Installation
 
-LGPA is on PyPI with prebuilt wheels for Windows, macOS, and Linux (Python 3.8–3.13), so the normal install needs **no compiler**:
-
 ```bash
 pip install LGPA
 ```
 
-That's it — `networkx` is pulled in automatically, and LGPA is importable from any folder in that Python environment.
+LGPA ships **prebuilt wheels** for Windows, macOS, and Linux (Python 3.8–3.13), so installing does **not** compile anything and does **not** require a C++ compiler. `networkx` is pulled in automatically.
+
+Verify the install:
+
+```bash
+python -c "import networkx as nx; from LGPA import LGPA; print(len(set(LGPA(nx.karate_club_graph()).fit_predict().values())))"
+```
+
+This should print `6`. If it does, you are ready to go.
+
+### Windows
+
+Nothing extra to install. As of **v1.0.4** the Windows wheels statically link the Microsoft C++ runtime, so LGPA works on a clean Windows machine with **no Visual C++ Redistributable and no compiler** required.
+
+> If you are on an **older version (< 1.0.4)** and `from LGPA import LGPA` crashes Python or the Jupyter kernel with **no error message**, the old wheel was missing that runtime. Either upgrade — `pip install --upgrade LGPA` — or install the [Microsoft Visual C++ Redistributable (x64)](https://aka.ms/vs/17/release/vc_redist.x64.exe) and restart. Upgrading is the better fix.
+>
+> Tip: test in a **terminal**, not a notebook — Jupyter hides native crashes, so a notebook just dies silently while a terminal shows the real error.
+
+### Linux / macOS
+
+`pip install LGPA` is all you need — the required runtime (`libstdc++` / `libc++`) is part of the system on any standard distribution or macOS install. Nothing else to do.
+
+### Jupyter / Anaconda — install into the *right* Python
+
+A very common failure is installing into one Python while the notebook runs another. To be certain the package lands in the interpreter your kernel uses, run this **inside a notebook cell**:
+
+```python
+import sys
+!"{sys.executable}" -m pip install --upgrade LGPA
+```
+
+Then **restart the kernel** and try `from LGPA import LGPA` again.
 
 <details>
-<summary>Other installation options</summary>
+<summary>Other installation options (from GitHub or source)</summary>
+
+These build the C++ extension on your machine, so they **do** require a compiler: Windows → [Microsoft C++ Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/) (*"Desktop development with C++"* workload); macOS → `xcode-select --install`; Linux → `sudo apt install build-essential`.
 
 **From GitHub (latest, unreleased changes):**
 
@@ -27,7 +58,7 @@ That's it — `networkx` is pulled in automatically, and LGPA is importable from
 pip install git+https://github.com/tahbounanas/LGPA.git
 ```
 
-**From source (clone, then install):**
+**From source:**
 
 ```bash
 git clone https://github.com/tahbounanas/LGPA.git
@@ -35,9 +66,15 @@ cd LGPA
 pip install .          # or: pip install -e .  to develop in place
 ```
 
-Installing from GitHub or source compiles the C++ extension locally, so it requires a C++ compiler: on Windows the [Microsoft C++ Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/) (*"Desktop development with C++"* workload), on macOS `xcode-select --install`, and on Linux `sudo apt install build-essential` (or your distro's equivalent). `pip install LGPA` avoids this entirely by using a prebuilt wheel.
-
 </details>
+
+### Troubleshooting
+
+| Symptom | Cause | Fix |
+|---|---|---|
+| Python/kernel dies on `from LGPA import LGPA`, no error shown | Old wheel (< 1.0.4) missing the MSVC runtime | `pip install --upgrade LGPA` (v1.0.4+ needs no runtime), or install [vc_redist.x64.exe](https://aka.ms/vs/17/release/vc_redist.x64.exe) and restart |
+| `ModuleNotFoundError: No module named 'LGPA'` in a notebook | Installed into a different Python than the kernel | Use the `sys.executable` cell above, restart the kernel |
+| Install seems stale or broken | Cached/partial wheel | `pip uninstall LGPA -y` then `pip install --no-cache-dir --force-reinstall LGPA` |
 
 ---
 
@@ -157,7 +194,7 @@ Communities found: 9
 NMI: 0.970
 ARI: 0.964
 F1 : 0.979
-Runtime: 0.133 s
+Runtime: 0.12 s
 ```
 
 LGPA recovers all 9 classes with near-perfect agreement to the ground truth (NMI 0.970, ARI 0.964). In the two coloured figures below, each detected community has been matched to its best-corresponding ground-truth class (via Hungarian assignment) and drawn in that class's colour, so the ground-truth and LGPA plots line up directly. The metrics, not the colours, are what quantify the agreement.
@@ -245,7 +282,13 @@ draw(lgpa_colors, f"Thiers - LGPA ({len(set(y_pred))} communities)",
 If you use LGPA in your research, please cite:
 
 ```bibtex
-
+@inproceedings{tahboun2026lgpa,
+  title     = {{LGPA}: Log-Gravity Propagation Algorithm for Community Detection in Complex Networks},
+  author    = {Tahboun, Anasse and Bensaid, Farah and Akachar, Elyazid and Ouhbi, Brahim and Frikh, Bouchra},
+  booktitle = {Proceedings of the IEEE/ACM International Conference on Advances in Social Networks Analysis and Mining (ASONAM)},
+  year      = {2026},
+  note      = {DOI to be added upon publication}
+}
 ```
 
 ---
