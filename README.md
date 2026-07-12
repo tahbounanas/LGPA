@@ -16,13 +16,19 @@ pip install LGPA
 
 LGPA ships **prebuilt wheels** for Windows, macOS, and Linux (Python 3.8–3.13), so installing does **not** compile anything and does **not** require a C++ compiler. `networkx` is pulled in automatically.
 
-Verify the install:
+Verify the install by running LGPA on two triangles joined by a single bridge edge:
 
 ```bash
-python -c "import networkx as nx; from LGPA import LGPA; print(len(set(LGPA(nx.karate_club_graph()).fit_predict().values())))"
+python -c "import networkx as nx; from LGPA import LGPA; G = nx.Graph([(0,1),(1,2),(2,0),(3,4),(4,5),(5,3),(2,3)]); print(LGPA(G).fit_predict())"
 ```
 
-This should print `6`. If it does, you are ready to go.
+This should print the two triangles as two separate communities:
+
+```
+{0: 0, 1: 0, 2: 0, 3: 1, 4: 1, 5: 1}
+```
+
+If you see that, the compiled core loaded correctly and you are ready to go.
 
 ### Windows
 
@@ -282,13 +288,7 @@ draw(lgpa_colors, f"Thiers - LGPA ({len(set(y_pred))} communities)",
 If you use LGPA in your research, please cite:
 
 ```bibtex
-@inproceedings{tahboun2026lgpa,
-  title     = {{LGPA}: Log-Gravity Propagation Algorithm for Community Detection in Complex Networks},
-  author    = {Tahboun, Anasse and Bensaid, Farah and Akachar, Elyazid and Ouhbi, Brahim and Frikh, Bouchra},
-  booktitle = {Proceedings of the IEEE/ACM International Conference on Advances in Social Networks Analysis and Mining (ASONAM)},
-  year      = {2026},
-  note      = {DOI to be added upon publication}
-}
+
 ```
 
 ---
